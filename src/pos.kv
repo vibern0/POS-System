@@ -1,0 +1,58 @@
+#:kivy 1.0
+
+<Controller>:
+	a_articles: gd_articles
+	a_buylist: bl_buylist
+	label_tprice: lb_total_price
+	bt_next: button_next
+	bt_previous: button_previous
+
+	BoxLayout:
+		orientation: 'vertical'
+
+		BoxLayout:
+			size_hint_y: 0.8
+
+
+			BoxLayout:
+
+				GridLayout:
+					id: gd_articles
+					size_hint_x: 0.7
+					cols: 3
+					rows: 3
+
+
+				BoxLayout:
+					id: bl_buylist
+					size_hint_x: 0.3
+					orientation: 'vertical'
+
+
+		BoxLayout:
+			size_hint_y: 0.2
+
+			BoxLayout:
+				size_hint_x: 0.7
+
+				Button:
+					text: 'Close Session'
+				Button:
+					text: 'New List'
+				Button:
+					text: 'Finish'
+				MyButton:
+					id: button_previous
+					text: 'Previous'
+				MyButton:
+					id: button_next
+					text: 'Next'
+				Button:
+					text: 'Menu'
+					on_press: root.loadMainWindow()
+
+			BoxLayout:
+				size_hint_x: 0.3
+				Label:
+					id: lb_total_price
+					text: 'TOTAL'
