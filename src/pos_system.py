@@ -19,11 +19,23 @@ class BuyList:
         self.buy_list = []
         self.total = 0
 
-    def addItem(self, item):
-        self.buy_list.append(item)
+    def addItem(self, item_name, price):
+        self.buy_list.append(Item(item_name, price, 0.1))
+
+    def removeItem(self, item_name):
+        for item in self.buy_list:
+            if(item.getName() == item_name):
+                self.buy_list.remove(item)
 
     def getAllItems(self):
         return self.buy_list
+
+    def getTotalPrice(self):
+        total_price = 0
+        for product in self.buy_list:
+            total_price += product.getPrice() + product.getPrice() * product.getTax()
+
+        return total_price
 
 class POS:
 
