@@ -6,7 +6,7 @@ A simple Point-of-Sale system with graphic interface. The system is controlled b
 
 <br>
 #### Design
-The system is developed in python and designed with [tkinter][tkinter]. 
+The system is developed in python and designed with [Kivy][kivy]. 
 
 #### How it works
 All the workers are registered on the system, and when someone start to work, needs to login in is account and logout at the end. This registery system is based on key cards.
@@ -26,5 +26,5 @@ The administrator as a panel to manage accounts in the system. The employers jus
 [license-url]: https://github.com/iamthekyt/POS-System
 [status-svg]: https://img.shields.io/pypi/status/Django.svg?maxAge=2592000
 [status-url]: https://github.com/iamthekyt/POS-System
-[tkinter]: <https://github.com/python/cpython/tree/master/Lib/tkinter>
+[kivy]: <https://github.com/kivy/kivy>
 [mongodb]: <https://docs.mongodb.com/getting-started/python/>
