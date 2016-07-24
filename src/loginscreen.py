@@ -4,6 +4,9 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.properties import ObjectProperty
+from kivy.uix.popup import Popup
+
+from log import Log
 
 class LoginScreen(BoxLayout):
 
@@ -20,7 +23,7 @@ class LoginScreen(BoxLayout):
         self.grid.username = TextInput(multiline=False)
         self.grid.add_widget(self.grid.username)
         self.grid.add_widget(Label(text='password'))
-        self.grid.password = TextInput(password=True, multiline=False)
+        self.grid.password = TextInput(multiline=False)
         self.grid.add_widget(self.grid.password)
         ###
         self.options = BoxLayout()
@@ -36,13 +39,34 @@ class LoginScreen(BoxLayout):
 
     ###
     def bt_login_clicked(self, obj):
-        print(self.grid.username.text)
-        
+        query = 'SELECT * FROM users WHERE name=\'' + self.grid.username.text + '\' AND password=\'' + self.grid.password.text + '\''
+        cursor = self.root_self.connDB.execute(query)
+        #
+        if(len(cursor.fetchall()) == 0):
+            content = Label(text = 'Username or Password incorrect!')
+            popup = Popup(
+                        title           = 'User Login',
+                        content         = content,
+                        size_hint       = (None, None),
+                        size            = (400, 100)
+                    )
+
+            # open the popup
+            popup.open()
+            return
+        #
+        Log.add(user = self.grid.username.text, list = ['Logged in'])
+        self.root_self.pos_system.setUser(self.grid.username.text)
+        #
         self.root_self.loadBarOptions()
         self.root_self.loadMainWindow()
-
+        #
+        self.root_self.a_price.label_price = Label(text = '0€')
+        self.root_self.a_price.add_widget(self.root_self.a_price.label_price)
+        #
         self.root_self.popup.dismiss()
 
     ###
     def bt_cancel_clicked(self, obj):
+        #
         self.root_self.popup.dismiss()

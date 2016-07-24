@@ -4,7 +4,7 @@
 	a_articles: gd_articles
 	a_buylist: bl_buylist
 	a_baroptions: bl_btoptions
-	label_tprice: lb_total_price
+	a_price: bl_price
 
 	BoxLayout:
 		orientation: 'vertical'
@@ -36,7 +36,5 @@
 				size_hint_x: 0.7
 
 			BoxLayout:
+				id: bl_price
 				size_hint_x: 0.3
-				Label:
-					id: lb_total_price
-					text: 'TOTAL'
