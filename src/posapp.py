@@ -10,9 +10,10 @@ from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.popup import Popup
 
 import sqlite3
-import buttonex
-import pos_system
-import loginscreen
+from buttonex import ButtonEx
+from pos_system import POS
+from loginscreen import LoginScreen
+from logoutscreen import LogoutScreen
 
 #from kivy.config import Config
 #Config.set('graphics', 'fullscreen', 'auto')
@@ -30,18 +31,18 @@ class Controller(FloatLayout):
     a_buylist = ObjectProperty()
     a_articles = ObjectProperty()
     a_baroptions = ObjectProperty()
-    label_tprice = ObjectProperty()
-    #pos = pos_system.POS()
+    a_price = ObjectProperty()
 
     ###
     def __init__(self, **kwargs):
         super(Controller, self).__init__(**kwargs)
+        self.pos_system = POS()
         self.connDB = sqlite3.connect('possystem.db')
         self.userLogin()
 
     ###
     def userLogin(self):
-        content = loginscreen.LoginScreen(root_self=self)
+        content = LoginScreen(root_self = self)
 
         ##
         self.popup = Popup(
@@ -56,11 +57,22 @@ class Controller(FloatLayout):
         self.popup.open()
 
     ###
-    def userLogout(self):
-        pass
+    def userLogout(self, obj):
+        content = LogoutScreen(root_self = self)
+
+        self.popup = Popup(
+                        title           = 'User Logout',
+                        content         = content,
+                        auto_dismiss    = False,
+                        size_hint       = (None, None),
+                        size            = (400, 170)
+                    )
+
+        # open the popup
+        self.popup.open()
 
     ###
-    def loadMainWindow(self):
+    def loadMainWindow(self, obj = None):
 
         self.atual_menu = 0
         op_n = 1
@@ -79,15 +91,21 @@ class Controller(FloatLayout):
 
         self.bt_next.enabled = False
         self.bt_previous.enabled = False
+        self.bt_clearlist.enabled = False
+        self.bt_finishlist.enabled = False
 
     ###
     def loadBarOptions(self):
-        self.a_baroptions.add_widget(Button(text = 'Close Session'))
-        self.a_baroptions.add_widget(Button(text = 'New List'))
-        self.a_baroptions.add_widget(Button(text = 'Finish'))
-        self.bt_next = buttonex.ButtonEx(text = 'Next')
+        self.a_baroptions.add_widget(Button(text='Close Session', on_press=self.userLogout))
+        self.bt_newlist = ButtonEx(text = 'New List', on_press=self.startNewBuyList)
+        self.a_baroptions.add_widget(self.bt_newlist)
+        self.bt_clearlist = ButtonEx(text = 'Clear List', on_press=self.clearBuyList)
+        self.a_baroptions.add_widget(self.bt_clearlist)
+        self.bt_finishlist = ButtonEx(text = 'Finish List', on_press=self.finishBuyList)
+        self.a_baroptions.add_widget(self.bt_finishlist)
+        self.bt_next = ButtonEx(text = 'Next')
         self.a_baroptions.add_widget(self.bt_next)
-        self.bt_previous = buttonex.ButtonEx(text = 'Previous')
+        self.bt_previous = ButtonEx(text = 'Previous')
         self.a_baroptions.add_widget(self.bt_previous)
         self.a_baroptions.add_widget(Button(text = 'Menu', on_press = self.loadMainWindow))
 
@@ -113,23 +131,54 @@ class Controller(FloatLayout):
 
     ###
     def addToBuyList(self, obj):
+        if(self.pos_system.getBuyList() == None):
+            content = Label(text = 'You need to start a new list!')
+            popup = Popup(
+                        title           = 'No Buy List',
+                        content         = content,
+                        size_hint       = (None, None),
+                        size            = (400, 100)
+                    )
+
+            # open the popup
+            popup.open()
+            return
+
         button = Button(text=obj.text, size_hint_y = None, height = 40)
-        button.bind(on_press = self.removeToBuyList)
+        button.bind(on_press = self.removeFromBuyList)
         self.a_buylist.add_widget(button)
+        self.pos_system.getBuyList().addItem(item_name = obj.text, price = 5)
         self.updateTotalPrice()
 
     ###
-    def removeToBuyList(self, obj):
+    def removeFromBuyList(self, obj):
         self.a_buylist.remove_widget(obj)
+        self.pos_system.getBuyList().removeItem(item_name = obj.text)
         self.updateTotalPrice()
 
     ###
-    def startNewBuyList(self):
-        pass
+    def clearBuyList(self, obj):
+        self.a_buylist.clear_widgets()
+        self.pos_system.getBuyList().clearList()
+
+    ###
+    def startNewBuyList(self, obj):
+        self.pos_system.newBuyList()
+        self.bt_clearlist.enabled = True
+        self.bt_finishlist.enabled = True
+        self.bt_newlist.enabled = False
+
+    ###
+    def finishBuyList(self, obj):
+        self.clearBuyList(obj=obj)
+        self.bt_clearlist.enabled = False
+        self.bt_finishlist.enabled = False
+        self.bt_newlist.enabled = True
 
     ###
     def updateTotalPrice(self):
-        pass
+        #
+        self.a_price.label_price.text = str(self.pos_system.getBuyList().getTotalPrice()) + "€"
 
 
 class PosApp(App):

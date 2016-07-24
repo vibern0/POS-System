@@ -37,13 +37,17 @@ class BuyList:
 
         return total_price
 
+    def clearList(self):
+        self.buy_list = []
+
 class POS:
 
     def __init__(self):
-        self.user = ""
+        self.buyList = None
+        self.user = None
 
-    def setUser(self):
-        return self
+    def setUser(self, name):
+        self.user = name
 
     def getUser(self):
         return self.user
@@ -51,13 +55,8 @@ class POS:
     def newBuyList(self):
         self.buyList = BuyList()
 
+    def closeBuyList(self):
+        self.buyList = None
+
     def getBuyList(self):
         return self.buyList
-
-    def printBuyList(self):
-        i = self.buyList.getAllItems()
-        for item in i:
-            print(item.getName())
-            print(item.getPrice())
-            print(item.getTax())
-            print(" ")
