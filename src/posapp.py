@@ -91,8 +91,13 @@ class Controller(FloatLayout):
 
         self.bt_next.enabled = False
         self.bt_previous.enabled = False
-        self.bt_clearlist.enabled = False
-        self.bt_finishlist.enabled = False
+
+        if(self.pos_system.getBuyList() == None):
+            self.bt_newlist.enabled = True
+            self.bt_clearlist.enabled = False
+            self.bt_finishlist.enabled = False
+
+        self.menu_page = 0
 
     ###
     def loadBarOptions(self):
@@ -103,21 +108,36 @@ class Controller(FloatLayout):
         self.a_baroptions.add_widget(self.bt_clearlist)
         self.bt_finishlist = ButtonEx(text = 'Finish List', on_press=self.finishBuyList)
         self.a_baroptions.add_widget(self.bt_finishlist)
-        self.bt_next = ButtonEx(text = 'Next')
+        self.bt_next = ButtonEx(text = 'Next', on_press = self.changePage)
         self.a_baroptions.add_widget(self.bt_next)
-        self.bt_previous = ButtonEx(text = 'Previous')
+        self.bt_previous = ButtonEx(text = 'Previous', on_press = self.changePage)
         self.a_baroptions.add_widget(self.bt_previous)
         self.a_baroptions.add_widget(Button(text = 'Menu', on_press = self.loadMainWindow))
 
     ###
+    def changePage(self, obj):
+        if obj == self.bt_next:
+            self.menu_page = self.menu_page + 1
+        elif obj == self.bt_previous:
+            self.menu_page = self.menu_page - 1
+
+        self.openNewMenu(obj = obj)
+
+    ###
     def openNewMenu(self, obj):
         op_n = 1
-        query = 'SELECT name FROM products WHERE type="' + obj.text.lower() + '" LIMIT 9'
+        total_rows = 0
+        if obj != self.bt_next and obj != self.bt_previous:
+            self.menu_type = obj.text.lower()
+        
+        query = 'SELECT name FROM products WHERE type="' + self.menu_type + '" LIMIT ' + str(self.menu_page * 9) + ', ' + str((self.menu_page + 1) * 9 + 1)
         cursor = self.connDB.execute(query)
 
         self.a_articles.clear_widgets()
 
         for row in cursor:
+            total_rows = total_rows + 1
+            if(total_rows > 9) : break
             button = Button(text=row[0])
             button.bind(on_press=self.addToBuyList)
             op_n = op_n + 1
@@ -126,9 +146,16 @@ class Controller(FloatLayout):
         for a in range(op_n-1, 9):
             self.a_articles.add_widget(Label(text=''))
 
-        self.bt_next.enabled = True
-        self.bt_previous.enabled = False
+        if(total_rows > 9):
+            self.bt_next.enabled = True
+        else:
+            self.bt_next.enabled = False
 
+        if(self.menu_page > 0):
+            self.bt_previous.enabled = True
+        else:
+            self.bt_previous.enabled = False
+        
     ###
     def addToBuyList(self, obj):
         if(self.pos_system.getBuyList() == None):
