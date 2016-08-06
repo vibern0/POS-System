@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # POS-System
 [![License][license-svg]][license-url]
 [![Status][status-svg]][status-url]
@@ -60,4 +59,3 @@ The administrator as a panel to manage accounts in the system. Each employer hav
 [status-url]: https://github.com/iamthekyt/POS-System
 [kivy]: <https://github.com/kivy/kivy>
 [sqlite3]: https://docs.python.org/2/library/sqlite3.html
->>>>>>> 1cd8d85785f5ee34f5bfa222e5722b457820360f
