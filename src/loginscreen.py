@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
@@ -55,7 +57,7 @@ class LoginScreen(BoxLayout):
             popup.open()
             return
         #
-        Log.add(user = self.grid.username.text, list = ['Logged in'])
+        #Log.add(user = self.grid.username.text, list = ['Logged in'])
         self.root_self.pos_system.setUser(self.grid.username.text)
         #
         self.root_self.loadBarOptions()

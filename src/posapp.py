@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import kivy
 kivy.require('1.0.5')
 
@@ -129,7 +131,7 @@ class Controller(FloatLayout):
         total_rows = 0
         if obj != self.bt_next and obj != self.bt_previous:
             self.menu_type = obj.text.lower()
-        
+
         query = 'SELECT name FROM products WHERE type="' + self.menu_type + '" LIMIT ' + str(self.menu_page * 9) + ', ' + str((self.menu_page + 1) * 9 + 1)
         cursor = self.connDB.execute(query)
 
@@ -155,7 +157,7 @@ class Controller(FloatLayout):
             self.bt_previous.enabled = True
         else:
             self.bt_previous.enabled = False
-        
+
     ###
     def addToBuyList(self, obj):
         if(self.pos_system.getBuyList() == None):
@@ -205,7 +207,7 @@ class Controller(FloatLayout):
     ###
     def updateTotalPrice(self):
         #
-        self.a_price.label_price.text = str(self.pos_system.getBuyList().getTotalPrice()) + "€"
+        self.a_price.label_price.text = str(self.pos_system.getBuyList().getTotalPrice()) + '€'
 
 
 class PosApp(App):
