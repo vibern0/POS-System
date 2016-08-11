@@ -1,9 +1,13 @@
 
 class Item:
-    def __init__(self, name, price, tax):
+    def __init__(self, id_p, name, price, tax):
+        self.id = id_p
         self.name = name
         self.price = price
         self.tax = tax
+
+    def getID(self):
+        return self.id
 
     def getName(self):
         return self.name
@@ -19,8 +23,8 @@ class BuyList:
         self.buy_list = []
         self.total = 0
 
-    def addItem(self, item_name, price):
-        self.buy_list.append(Item(item_name, price, 0.1))
+    def addItem(self, item):
+        self.buy_list.append(item)
 
     def removeItem(self, item_name):
         for item in self.buy_list:
@@ -46,11 +50,17 @@ class POS:
         self.buyList = None
         self.user = None
 
-    def setUser(self, name):
+    def setUserName(self, name):
         self.user = name
 
-    def getUser(self):
+    def getUserName(self):
         return self.user
+
+    def setUserID(self, user_id):
+        self.userID = user_id
+
+    def getUserID(self):
+        return self.userID
 
     def newBuyList(self):
         self.buyList = BuyList()

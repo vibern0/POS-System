@@ -41,10 +41,11 @@ class LoginScreen(BoxLayout):
 
     ###
     def bt_login_clicked(self, obj):
-        query = 'SELECT * FROM users WHERE name=\'' + self.grid.username.text + '\' AND password=\'' + self.grid.password.text + '\''
+        query = 'SELECT id FROM users WHERE name=\'' + self.grid.username.text + '\' AND password=\'' + self.grid.password.text + '\''
         cursor = self.root_self.connDB.execute(query)
+        row = cursor.fetchone()
         #
-        if(len(cursor.fetchall()) == 0):
+        if(row == None):
             content = Label(text = 'Username or Password incorrect!')
             popup = Popup(
                         title           = 'User Login',
@@ -57,8 +58,9 @@ class LoginScreen(BoxLayout):
             popup.open()
             return
         #
-        #Log.add(user = self.grid.username.text, list = ['Logged in'])
-        self.root_self.pos_system.setUser(self.grid.username.text)
+        self.root_self.pos_system.setUserName(self.grid.username.text)
+        self.root_self.pos_system.setUserID(row[0])
+        self.root_self.registerLogs(log_type = 1)
         #
         self.root_self.loadBarOptions()
         self.root_self.loadMainWindow()

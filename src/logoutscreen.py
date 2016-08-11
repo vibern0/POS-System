@@ -30,7 +30,7 @@ class LogoutScreen(BoxLayout):
 
     ###
     def answerYes(self, obj):
-        Log.add(user = self.root_self.pos_system.getUser(), list = ['Close Session'])
+        self.root_self.registerLogs(log_type = 0)
         #
         self.root_self.a_buylist.clear_widgets()
         self.root_self.a_articles.clear_widgets()
@@ -40,4 +40,3 @@ class LogoutScreen(BoxLayout):
         self.root_self.popup.dismiss()
         #
         self.root_self.userLogin()
-
