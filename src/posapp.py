@@ -16,6 +16,7 @@ from buttonex import ButtonEx
 from pos_system import POS
 from loginscreen import LoginScreen
 from logoutscreen import LogoutScreen
+from article import Article
 
 #from kivy.config import Config
 #Config.set('graphics', 'fullscreen', 'auto')
@@ -41,6 +42,24 @@ class Controller(FloatLayout):
         self.pos_system = POS()
         self.connDB = sqlite3.connect('possystem.db')
         self.userLogin()
+
+    ###
+    def registerLogs(self, log_type):
+        query = 'INSERT INTO logs(id, type) VALUES(' + str(self.pos_system.getUserID()) + ',' + str(log_type) + ')'
+        self.connDB.execute(query)
+
+    ###
+    def registerBuyList(self, pay_number):
+        itens = self.pos_system.getBuyList().getAllItems()
+        query = 'INSERT INTO buylist(pay_number, total_price) VALUES(' + \
+            pay_number + ',' + self.pos_system.getBuyList().getTotalPrice() + ')'
+        self.connDB.execute(query)
+        lastrow_id = self.connDB.lastrowid
+
+        for item in itens:
+            query = 'INSERT INTO articles_buylist(id_list, id_product, price, tax) VALUES(' + \
+                lastrow_id + ',' + item.getID() + ',' + item.getPrice() + ',' + item.getTax() + ')'
+            self.connDB.execute(query)
 
     ###
     def userLogin(self):
@@ -142,6 +161,7 @@ class Controller(FloatLayout):
             if(total_rows > 9) : break
             button = Button(text=row[0])
             button.bind(on_press=self.addToBuyList)
+            #article = Article(Button(text=row[0]), Item(id_p = 1, name = 'abc', price = 2, tax = 0.2))
             op_n = op_n + 1
             self.a_articles.add_widget(button)
 
