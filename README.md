@@ -4,12 +4,11 @@
 
 A simple Point-of-Sale system with graphic interface. The system is controlled by one person at time.
 
-<br>
 #### Design
 The system is developed in python and designed with [Kivy][kivy]. 
 
 #### How it works
-All the workers are registered on the system, and when someone start to work, needs to login in is account and logout at the end. This registery system is based on key cards.
+All the workers are registered on the system, and when someone start to work, needs to login in his account and logout at the end.
 Everything keeps registered.
 The system load from a database what is still available and what's not available. When someting's stock is almost ending, the user will be warned.
 The administrator will take care of the available itens.
@@ -23,8 +22,8 @@ The administrator as a panel to manage accounts in the system. Each employer hav
 
 
 [license-svg]: https://img.shields.io/badge/license-GNU%20v.3-blue.svg
-[license-url]: https://github.com/iamthekyt/POS-System
+[license-url]: https://github.com/obernardovieira/POS-System
 [status-svg]: https://img.shields.io/pypi/status/Django.svg?maxAge=2592000
-[status-url]: https://github.com/iamthekyt/POS-System
+[status-url]: https://github.com/obernardovieira/POS-System
 [kivy]: <https://github.com/kivy/kivy>
 [sqlite3]: https://docs.python.org/2/library/sqlite3.html
