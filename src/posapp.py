@@ -14,6 +14,7 @@ from kivy.uix.popup import Popup
 import sqlite3
 from buttonex import ButtonEx
 from pos_system import POS
+from pos_system import Item
 from loginscreen import LoginScreen
 from logoutscreen import LogoutScreen
 from article import Article
@@ -40,9 +41,17 @@ class Controller(FloatLayout):
     def __init__(self, **kwargs):
         super(Controller, self).__init__(**kwargs)
         self.pos_system = POS()
+        
         self.connDB = sqlite3.connect('possystem.db')
+        self.db_cursor = self.connDB.cursor()
+        
         self.userLogin()
 
+    ###
+    def __exit__(self, exc_type, exc_value, traceback):
+        print("closed")
+        self.connDB.close()
+    
     ###
     def registerLogs(self, log_type):
         query = 'INSERT INTO logs(id, type) VALUES(' + str(self.pos_system.getUserID()) + ',' + str(log_type) + ')'
@@ -151,7 +160,7 @@ class Controller(FloatLayout):
         if obj != self.bt_next and obj != self.bt_previous:
             self.menu_type = obj.text.lower()
 
-        query = 'SELECT name FROM products WHERE type="' + self.menu_type + '" LIMIT ' + str(self.menu_page * 9) + ', ' + str((self.menu_page + 1) * 9 + 1)
+        query = 'SELECT id, name, price FROM products WHERE type="' + self.menu_type + '" LIMIT ' + str(self.menu_page * 9) + ', ' + str((self.menu_page + 1) * 9 + 1)
         cursor = self.connDB.execute(query)
 
         self.a_articles.clear_widgets()
@@ -159,9 +168,9 @@ class Controller(FloatLayout):
         for row in cursor:
             total_rows = total_rows + 1
             if(total_rows > 9) : break
-            button = Button(text=row[0])
+            button = Button(text=row[1])
             button.bind(on_press=self.addToBuyList)
-            #article = Article(Button(text=row[0]), Item(id_p = 1, name = 'abc', price = 2, tax = 0.2))
+            button.item = Item(id_p = row[0], name = row[1], price = row[2], tax = 0.2)
             op_n = op_n + 1
             self.a_articles.add_widget(button)
 
@@ -196,7 +205,7 @@ class Controller(FloatLayout):
         button = Button(text=obj.text, size_hint_y = None, height = 40)
         button.bind(on_press = self.removeFromBuyList)
         self.a_buylist.add_widget(button)
-        self.pos_system.getBuyList().addItem(item_name = obj.text, price = 5)
+        self.pos_system.getBuyList().addItem(obj.item)
         self.updateTotalPrice()
 
     ###
@@ -206,9 +215,10 @@ class Controller(FloatLayout):
         self.updateTotalPrice()
 
     ###
-    def clearBuyList(self, obj):
+    def clearBuyList(self, obj=None):
         self.a_buylist.clear_widgets()
         self.pos_system.getBuyList().clearList()
+        self.updateTotalPrice()
 
     ###
     def startNewBuyList(self, obj):
@@ -219,11 +229,49 @@ class Controller(FloatLayout):
 
     ###
     def finishBuyList(self, obj):
-        self.clearBuyList(obj=obj)
+        #ask to confirm
+        content = BoxLayout(orientation = 'vertical')
+        content.add_widget(Label(text = 'Do you really want to finish?'))
+        button_confirm = Button(text='Finish')
+        button_confirm.bind(on_press=self.registerBuy)
+        button_cancel = Button(text='Cancel')
+        button_cancel.bind(on_press=self.popup.dismiss)
+        options = BoxLayout()
+        options.add_widget(button_confirm)
+        options.add_widget(button_cancel)
+        content.add_widget(options)
+        
+        #
+        self.popup = Popup(
+                    title           = 'Finish Buy List',
+                    content         = content,
+                    size_hint       = (None, None),
+                    size            = (400, 100)
+                )
+
+        # open the popup
+        self.popup.open()
+        
+    ###
+    def registerBuy(self, obj):
+        query = 'INSERT INTO buylist(pay_number, total_price) VALUES(' + str(55235) + ',' + str(self.pos_system.getBuyList().getTotalPrice()) + ')'
+        
+        self.db_cursor.execute(query)
+        self.connDB.commit()
+        
+        id_list = self.db_cursor.lastrowid
+        for item in self.pos_system.getBuyList().getAllItems() :
+            print(str(id_list))
+            query = 'INSERT INTO articles_buylist(id_list, id_product, price, tax) VALUES(' + str(id_list) + ', ' + str(item.getID()) + ', ' + str(item.getPrice()) + ', ' + str(item.getTax()) + ')'
+            self.db_cursor.execute(query)
+            self.connDB.commit()
+        
+        self.clearBuyList()
         self.bt_clearlist.enabled = False
         self.bt_finishlist.enabled = False
         self.bt_newlist.enabled = True
-
+        self.popup.dismiss()
+    
     ###
     def updateTotalPrice(self):
         #
@@ -234,3 +282,9 @@ class PosApp(App):
 
     def build(self):
         return Controller()
+    
+    def on_start(self):
+        print("on_start")
+
+    def on_stop(self):
+        print("on_stop")
