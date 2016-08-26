@@ -17,7 +17,6 @@ from pos_system import POS
 from pos_system import Item
 from loginscreen import LoginScreen
 from logoutscreen import LogoutScreen
-from article import Article
 
 #from kivy.config import Config
 #Config.set('graphics', 'fullscreen', 'auto')
@@ -48,14 +47,14 @@ class Controller(FloatLayout):
         self.userLogin()
 
     ###
-    def __exit__(self, exc_type, exc_value, traceback):
-        print("closed")
-        self.connDB.close()
+    def __del__(self):
+        print 'died'
     
     ###
     def registerLogs(self, log_type):
         query = 'INSERT INTO logs(id, type) VALUES(' + str(self.pos_system.getUserID()) + ',' + str(log_type) + ')'
-        self.connDB.execute(query)
+        self.db_cursor.execute(query)
+        self.connDB.commit()
 
     ###
     def registerBuyList(self, pay_number):
@@ -160,7 +159,8 @@ class Controller(FloatLayout):
         if obj != self.bt_next and obj != self.bt_previous:
             self.menu_type = obj.text.lower()
 
-        query = 'SELECT id, name, price FROM products WHERE type="' + self.menu_type + '" LIMIT ' + str(self.menu_page * 9) + ', ' + str((self.menu_page + 1) * 9 + 1)
+        #check if stock > 0
+        query = 'SELECT id, name, price FROM products WHERE type="' + self.menu_type + '" AND stock>0  LIMIT ' + str(self.menu_page * 9) + ', ' + str((self.menu_page + 1) * 9 + 1)
         cursor = self.connDB.execute(query)
 
         self.a_articles.clear_widgets()
@@ -254,15 +254,18 @@ class Controller(FloatLayout):
         
     ###
     def registerBuy(self, obj):
-        query = 'INSERT INTO buylist(pay_number, total_price) VALUES(' + str(55235) + ',' + str(self.pos_system.getBuyList().getTotalPrice()) + ')'
+        query = 'INSERT INTO buylist(pay_number, total_price, author) VALUES(' + str(55235) + ',' + str(self.pos_system.getBuyList().getTotalPrice()) + ', \'' + self.pos_system.getUserName() + '\')'
         
         self.db_cursor.execute(query)
         self.connDB.commit()
         
         id_list = self.db_cursor.lastrowid
         for item in self.pos_system.getBuyList().getAllItems() :
-            print(str(id_list))
             query = 'INSERT INTO articles_buylist(id_list, id_product, price, tax) VALUES(' + str(id_list) + ', ' + str(item.getID()) + ', ' + str(item.getPrice()) + ', ' + str(item.getTax()) + ')'
+            self.db_cursor.execute(query)
+            self.connDB.commit()
+            #remove from stock
+            query = 'UPDATE products SET stock=stock-1 WHERE id=' + str(item.getID())
             self.db_cursor.execute(query)
             self.connDB.commit()
         
@@ -282,9 +285,3 @@ class PosApp(App):
 
     def build(self):
         return Controller()
-    
-    def on_start(self):
-        print("on_start")
-
-    def on_stop(self):
-        print("on_stop")
