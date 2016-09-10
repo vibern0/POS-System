@@ -3,8 +3,6 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.properties import ObjectProperty
 
-from log import Log
-
 class LogoutScreen(BoxLayout):
 
     root_self = ObjectProperty()
@@ -30,7 +28,7 @@ class LogoutScreen(BoxLayout):
 
     ###
     def answerYes(self, obj):
-        self.root_self.registerLogs(log_type = 0)
+        self.root_self.database.registerLogs(self.root_self.getUserID(), 0)
         #
         self.root_self.a_buylist.clear_widgets()
         self.root_self.a_articles.clear_widgets()
