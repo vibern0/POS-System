@@ -8,8 +8,6 @@ from kivy.uix.button import Button
 from kivy.properties import ObjectProperty
 from kivy.uix.popup import Popup
 
-from log import Log
-
 class LoginScreen(BoxLayout):
 
     root_self = ObjectProperty()
@@ -41,10 +39,9 @@ class LoginScreen(BoxLayout):
 
     ###
     def bt_login_clicked(self, obj):
-        query = 'SELECT id FROM users WHERE name=\'' + self.grid.username.text + '\' AND password=\'' + self.grid.password.text + '\''
-        cursor = self.root_self.connDB.execute(query)
-        row = cursor.fetchone()
-        #
+        
+        row = self.root_self.database.isValidLogin(self.grid.username.text, self.grid.password.text)
+        
         if(row == None):
             content = Label(text = 'Username or Password incorrect!')
             popup = Popup(
@@ -60,7 +57,7 @@ class LoginScreen(BoxLayout):
         #
         self.root_self.pos_system.setUserName(self.grid.username.text)
         self.root_self.pos_system.setUserID(row[0])
-        self.root_self.registerLogs(log_type = 1)
+        self.root_self.database.registerLogs(self.root_self.pos_system.getUserID(), 0)
         #
         self.root_self.loadBarOptions()
         self.root_self.loadMainWindow()

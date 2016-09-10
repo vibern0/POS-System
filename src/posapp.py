@@ -11,12 +11,12 @@ from kivy.app import App
 from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.popup import Popup
 
-import sqlite3
+
 from buttonex import ButtonEx
-from pos_system import POS
-from pos_system import Item
-from loginscreen import LoginScreen
-from logoutscreen import LogoutScreen
+from pos.pos_system import POS, Item
+from database.db import Database
+from session.loginscreen import LoginScreen
+from session.logoutscreen import LogoutScreen
 
 #from kivy.config import Config
 #Config.set('graphics', 'fullscreen', 'auto')
@@ -40,34 +40,12 @@ class Controller(FloatLayout):
     def __init__(self, **kwargs):
         super(Controller, self).__init__(**kwargs)
         self.pos_system = POS()
-        
-        self.connDB = sqlite3.connect('possystem.db')
-        self.db_cursor = self.connDB.cursor()
-        
+        self.database = Database();
         self.userLogin()
-
-    ###
-    def __del__(self):
-        print 'died'
     
     ###
     def registerLogs(self, log_type):
-        query = 'INSERT INTO logs(id, type) VALUES(' + str(self.pos_system.getUserID()) + ',' + str(log_type) + ')'
-        self.db_cursor.execute(query)
-        self.connDB.commit()
-
-    ###
-    def registerBuyList(self, pay_number):
-        itens = self.pos_system.getBuyList().getAllItems()
-        query = 'INSERT INTO buylist(pay_number, total_price) VALUES(' + \
-            pay_number + ',' + self.pos_system.getBuyList().getTotalPrice() + ')'
-        self.connDB.execute(query)
-        lastrow_id = self.connDB.lastrowid
-
-        for item in itens:
-            query = 'INSERT INTO articles_buylist(id_list, id_product, price, tax) VALUES(' + \
-                lastrow_id + ',' + item.getID() + ',' + item.getPrice() + ',' + item.getTax() + ')'
-            self.connDB.execute(query)
+        self.database.registerLogs(self.pos_system.getUserID(), log_type)
 
     ###
     def userLogin(self):
@@ -159,9 +137,7 @@ class Controller(FloatLayout):
         if obj != self.bt_next and obj != self.bt_previous:
             self.menu_type = obj.text.lower()
 
-        #check if stock > 0
-        query = 'SELECT id, name, price FROM products WHERE type="' + self.menu_type + '" AND stock>0  LIMIT ' + str(self.menu_page * 9) + ', ' + str((self.menu_page + 1) * 9 + 1)
-        cursor = self.connDB.execute(query)
+        cursor = self.database.loadArticles(self.menu_type, self.menu_page)
 
         self.a_articles.clear_widgets()
 
@@ -254,20 +230,7 @@ class Controller(FloatLayout):
         
     ###
     def registerBuy(self, obj):
-        query = 'INSERT INTO buylist(pay_number, total_price, author) VALUES(' + str(55235) + ',' + str(self.pos_system.getBuyList().getTotalPrice()) + ', \'' + self.pos_system.getUserName() + '\')'
-        
-        self.db_cursor.execute(query)
-        self.connDB.commit()
-        
-        id_list = self.db_cursor.lastrowid
-        for item in self.pos_system.getBuyList().getAllItems() :
-            query = 'INSERT INTO articles_buylist(id_list, id_product, price, tax) VALUES(' + str(id_list) + ', ' + str(item.getID()) + ', ' + str(item.getPrice()) + ', ' + str(item.getTax()) + ')'
-            self.db_cursor.execute(query)
-            self.connDB.commit()
-            #remove from stock
-            query = 'UPDATE products SET stock=stock-1 WHERE id=' + str(item.getID())
-            self.db_cursor.execute(query)
-            self.connDB.commit()
+        self.database.registerBuy(self.pos_system.getBuyList(), 5533, self.pos_system.getUserName())
         
         self.clearBuyList()
         self.bt_clearlist.enabled = False
