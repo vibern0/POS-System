@@ -15,8 +15,8 @@ from kivy.uix.popup import Popup
 from buttonex import ButtonEx
 from pos.pos_system import POS, Item
 from database.db import Database
-from session.loginscreen import LoginScreen
-from session.logoutscreen import LogoutScreen
+from Session.loginscreen import LoginScreen
+from Session.logoutscreen import LogoutScreen
 
 #from kivy.config import Config
 #Config.set('graphics', 'fullscreen', 'auto')
