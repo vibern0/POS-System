@@ -12,11 +12,12 @@ from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.popup import Popup
 
 
-from buttonex import ButtonEx
 from pos.pos_system import POS, Item
 from database.db import Database
-from Session.loginscreen import LoginScreen
-from Session.logoutscreen import LogoutScreen
+from interface.buttonex import ButtonEx
+from interface.loginscreen import LoginScreen
+from interface.logoutscreen import LogoutScreen
+from interface.boptions import bOptions
 
 #from kivy.config import Config
 #Config.set('graphics', 'fullscreen', 'auto')
@@ -40,9 +41,10 @@ class Controller(FloatLayout):
     def __init__(self, **kwargs):
         super(Controller, self).__init__(**kwargs)
         self.pos_system = POS()
-        self.database = Database();
+        self.database = Database()
+        self.bar_options = bOptions()
         self.userLogin()
-    
+
     ###
     def registerLogs(self, log_type):
         self.database.registerLogs(self.pos_system.getUserID(), log_type)
@@ -216,7 +218,7 @@ class Controller(FloatLayout):
         options.add_widget(button_confirm)
         options.add_widget(button_cancel)
         content.add_widget(options)
-        
+
         #
         self.popup = Popup(
                     title           = 'Finish Buy List',
@@ -227,17 +229,17 @@ class Controller(FloatLayout):
 
         # open the popup
         self.popup.open()
-        
+
     ###
     def registerBuy(self, obj):
         self.database.registerBuy(self.pos_system.getBuyList(), 5533, self.pos_system.getUserName())
-        
+
         self.clearBuyList()
         self.bt_clearlist.enabled = False
         self.bt_finishlist.enabled = False
         self.bt_newlist.enabled = True
         self.popup.dismiss()
-    
+
     ###
     def updateTotalPrice(self):
         #
