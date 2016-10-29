@@ -235,6 +235,7 @@ class Controller(FloatLayout):
         self.database.registerBuy(self.pos_system.getBuyList(), 5533, self.pos_system.getUserName())
 
         self.clearBuyList()
+        self.pos_system.closeBuyList();
         self.bt_clearlist.enabled = False
         self.bt_finishlist.enabled = False
         self.bt_newlist.enabled = True

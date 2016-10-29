@@ -28,7 +28,7 @@ class LogoutScreen(BoxLayout):
 
     ###
     def answerYes(self, obj):
-        self.root_self.database.registerLogs(self.root_self.getUserID(), 0)
+        self.root_self.database.registerLogs(self.root_self.pos_system.getUserID(), 0)
         #
         self.root_self.a_buylist.clear_widgets()
         self.root_self.a_articles.clear_widgets()
