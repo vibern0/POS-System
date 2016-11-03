@@ -1,5 +1,46 @@
 #:kivy 1.0
 
+<LoginScreen>:
+	username: ti_username
+	password: ti_password
+	orientation: 'vertical'
+
+	GridLayout:
+		cols: 2
+		Label:
+			text: 'User Name'
+		TextInput:
+			id: ti_username
+			multiline: False
+		Label:
+			text: 'Password'
+		TextInput:
+			id: ti_password
+			multiline: False
+
+	BoxLayout:
+		size_hint_y: 0.5
+		Button:
+			text: 'Cancel'
+			on_press: root.bt_cancel()
+		Button:
+			text: 'Login'
+			on_press: root.bt_login()
+
+
+<LogoutScreen>:
+	orientation: 'vertical'
+
+	Label:
+		text: 'Do you want to logout?'
+	BoxLayout:
+		Button:
+			text: 'No'
+			on_press: root.answerNo()
+		Button:
+			text: 'Yes'
+			on_press: root.answerYes()
+
 <Controller>:
 	a_articles: gd_articles
 	a_buylist: bl_buylist

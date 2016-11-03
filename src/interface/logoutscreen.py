@@ -10,24 +10,15 @@ class LogoutScreen(BoxLayout):
     ###
     def __init__(self, **kwargs):
         super(LogoutScreen, self).__init__(**kwargs)
-
-        self.orientation = 'vertical'
-
-        self.add_widget(Label(text='Do you want to logout?'))
-        self.bottom_layout = BoxLayout()
-        self.add_widget(self.bottom_layout)
-        self.bt_no = Button(text='No', on_press = self.answerNo)
-        self.bottom_layout.add_widget(self.bt_no)
-        self.bt_yes = Button(text='Yes', on_press = self.answerYes)
-        self.bottom_layout.add_widget(self.bt_yes)
+        #defined on .kv file
 
     ###
-    def answerNo(self, obj):
+    def answerNo(self):
         #
         self.root_self.popup.dismiss()
 
     ###
-    def answerYes(self, obj):
+    def answerYes(self):
         self.root_self.database.registerLogs(self.root_self.pos_system.getUserID(), 0)
         #
         self.root_self.a_buylist.clear_widgets()
