@@ -11,11 +11,13 @@ from kivy.uix.popup import Popup
 class LoginScreen(BoxLayout):
 
     root_self = ObjectProperty()
+    username = ObjectProperty()
+    password = ObjectProperty()
 
     ###
     def __init__(self, **kwargs):
         super(LoginScreen, self).__init__(**kwargs)
-        self.orientation = 'vertical'
+        '''self.orientation = 'vertical'
         ###
         self.grid = GridLayout()
         self.grid.cols = 2
@@ -35,13 +37,13 @@ class LoginScreen(BoxLayout):
         self.options.add_widget(self.options.bt_login)
         ###
         self.add_widget(self.grid)
-        self.add_widget(self.options)
+        self.add_widget(self.options)'''
 
     ###
-    def bt_login_clicked(self, obj):
-        
-        row = self.root_self.database.isValidLogin(self.grid.username.text, self.grid.password.text)
-        
+    def bt_login(self):
+
+        row = self.root_self.database.isValidLogin(self.username.text, self.password.text)
+
         if(row == None):
             content = Label(text = 'Username or Password incorrect!')
             popup = Popup(
@@ -55,7 +57,7 @@ class LoginScreen(BoxLayout):
             popup.open()
             return
         #
-        self.root_self.pos_system.setUserName(self.grid.username.text)
+        self.root_self.pos_system.setUserName(self.username.text)
         self.root_self.pos_system.setUserID(row[0])
         self.root_self.database.registerLogs(self.root_self.pos_system.getUserID(), 0)
         #
@@ -68,6 +70,6 @@ class LoginScreen(BoxLayout):
         self.root_self.popup.dismiss()
 
     ###
-    def bt_cancel_clicked(self, obj):
+    def bt_cancel(self):
         #
         self.root_self.popup.dismiss()
