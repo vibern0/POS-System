@@ -1,5 +1,39 @@
 #:kivy 1.0
 
+<BarOptions>:
+	bt_newlist: newlist
+	bt_clearlist: clearbuylist
+	bt_finishlist: finishbuylist
+	bt_next: nextpage
+	bt_previous: previouspage
+	Button:
+		text: 'Close Session'
+		on_press: root.userLogout()
+	ButtonEx:
+		id: newlist
+		text: 'New List'
+		on_press: root.startNewBuyList()
+	ButtonEx:
+		id: clearbuylist
+		text: 'Clear List'
+		on_press: root.clearBuyList()
+	ButtonEx:
+		id: finishbuylist
+		text: 'Finish List'
+		on_press: root.finishBuyList()
+	ButtonEx:
+		id: nextpage
+		text: 'Next'
+		on_press: root.nextPage()
+	ButtonEx:
+		id: previouspage
+		text: 'Previous'
+		on_press: root.previousPage()
+	Button:
+		text: 'Menu'
+		on_press: root.loadMainWindow()
+
+
 <LoginScreen>:
 	username: ti_username
 	password: ti_password

@@ -16,6 +16,7 @@ from database.db import Database
 from interface.buttonex import ButtonEx
 from interface.loginscreen import LoginScreen
 from interface.logoutscreen import LogoutScreen
+from interface.baroptions import BarOptions
 
 #from kivy.config import Config
 #Config.set('graphics', 'fullscreen', 'auto')
@@ -40,6 +41,7 @@ class Controller(FloatLayout):
         super(Controller, self).__init__(**kwargs)
         self.pos_system = POS()
         self.database = Database()
+        self.a_baroptions = BarOptions(pos_system = self.pos_system)
         self.userLogin()
 
     ###
@@ -119,16 +121,6 @@ class Controller(FloatLayout):
         self.bt_previous = ButtonEx(text = 'Previous', on_press = self.changePage)
         self.a_baroptions.add_widget(self.bt_previous)
         self.a_baroptions.add_widget(Button(text = 'Menu', on_press = self.loadMainWindow))
-
-    ###
-    def changePage(self, obj):
-        if obj == self.bt_next:
-            self.menu_page = self.menu_page + 1
-        elif obj == self.bt_previous:
-            self.menu_page = self.menu_page - 1
-
-        self.openNewMenu(obj = obj)
-
     ###
     def openNewMenu(self, obj):
         op_n = 1
@@ -188,44 +180,6 @@ class Controller(FloatLayout):
         self.a_buylist.remove_widget(obj)
         self.pos_system.getBuyList().removeItem(item_name = obj.text)
         self.updateTotalPrice()
-
-    ###
-    def clearBuyList(self, obj=None):
-        self.a_buylist.clear_widgets()
-        self.pos_system.getBuyList().clearList()
-        self.updateTotalPrice()
-
-    ###
-    def startNewBuyList(self, obj):
-        self.pos_system.newBuyList()
-        self.bt_clearlist.enabled = True
-        self.bt_finishlist.enabled = True
-        self.bt_newlist.enabled = False
-
-    ###
-    def finishBuyList(self, obj):
-        #ask to confirm
-        content = BoxLayout(orientation = 'vertical')
-        content.add_widget(Label(text = 'Do you really want to finish?'))
-        button_confirm = Button(text='Finish')
-        button_confirm.bind(on_press=self.registerBuy)
-        button_cancel = Button(text='Cancel')
-        button_cancel.bind(on_press=self.popup.dismiss)
-        options = BoxLayout()
-        options.add_widget(button_confirm)
-        options.add_widget(button_cancel)
-        content.add_widget(options)
-
-        #
-        self.popup = Popup(
-                    title           = 'Finish Buy List',
-                    content         = content,
-                    size_hint       = (None, None),
-                    size            = (400, 100)
-                )
-
-        # open the popup
-        self.popup.open()
 
     ###
     def registerBuy(self, obj):
