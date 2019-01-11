@@ -17,10 +17,10 @@ from interface.logoutscreen import LogoutScreen
 class BarOptions(BoxLayout):
 
     bt_newlist = ObjectProperty()
-	bt_clearlist = ObjectProperty()
-	bt_finishlist = ObjectProperty()
-	bt_next = ObjectProperty()
-	bt_previous = ObjectProperty()
+    bt_clearlist = ObjectProperty()
+    bt_finishlist = ObjectProperty()
+    bt_next = ObjectProperty()
+    bt_previous = ObjectProperty()
 
     pos_system = ObjectProperty()
 
