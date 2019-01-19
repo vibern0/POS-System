@@ -6,6 +6,8 @@ kivy.require('1.0.5')
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 
+import sys
+sys.path.append('./../src/')
 
 from pos.pos_system import POS, Item
 from database.db import Database
@@ -34,7 +36,7 @@ class BarOptions(BoxLayout):
         self.bt_previous = False
 
     ###
-    def startNewBuyList(self):
+    def startNewBuyList(self, instance):
         self.pos_system.newBuyList()
         self.bt_clearlist.enabled = True
         self.bt_finishlist.enabled = True

@@ -10,6 +10,8 @@ from kivy.uix.label import Label
 from kivy.properties import ObjectProperty, BooleanProperty
 from kivy.uix.popup import Popup
 
+import sys
+sys.path.append('./../src/')
 
 from pos.pos_system import POS, Item
 from database.db import Database
@@ -41,7 +43,7 @@ class Controller(FloatLayout):
         super(Controller, self).__init__(**kwargs)
         self.pos_system = POS()
         self.database = Database()
-        self.a_baroptions = BarOptions(pos_system = self.pos_system)
+        self.baroptions = BarOptions(pos_system = self.pos_system)
         self.userLogin()
 
     ###
@@ -110,15 +112,15 @@ class Controller(FloatLayout):
     ###
     def loadBarOptions(self):
         self.a_baroptions.add_widget(Button(text='Close Session', on_press=self.userLogout))
-        self.bt_newlist = ButtonEx(text = 'New List', on_press=self.startNewBuyList)
+        self.bt_newlist = ButtonEx(text = 'New List', on_press=self.baroptions.startNewBuyList)
         self.a_baroptions.add_widget(self.bt_newlist)
-        self.bt_clearlist = ButtonEx(text = 'Clear List', on_press=self.clearBuyList)
+        self.bt_clearlist = ButtonEx(text = 'Clear List', on_press=self.baroptions.clearBuyList)
         self.a_baroptions.add_widget(self.bt_clearlist)
-        self.bt_finishlist = ButtonEx(text = 'Finish List', on_press=self.finishBuyList)
+        self.bt_finishlist = ButtonEx(text = 'Finish List', on_press=self.baroptions.finishBuyList)
         self.a_baroptions.add_widget(self.bt_finishlist)
-        self.bt_next = ButtonEx(text = 'Next', on_press = self.changePage)
+        self.bt_next = ButtonEx(text = 'Next', on_press = self.baroptions.nextPage)
         self.a_baroptions.add_widget(self.bt_next)
-        self.bt_previous = ButtonEx(text = 'Previous', on_press = self.changePage)
+        self.bt_previous = ButtonEx(text = 'Previous', on_press = self.baroptions.previousPage)
         self.a_baroptions.add_widget(self.bt_previous)
         self.a_baroptions.add_widget(Button(text = 'Menu', on_press = self.loadMainWindow))
     ###
