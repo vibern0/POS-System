@@ -14,4 +14,4 @@ class ButtonEx(Button):
 
     def on_touch_down( self, touch ):
         if self.enabled:
-            return super(self.__class__, self).on_touch_down(touch)
+            return super(self.__class__, self).on_touch_down(touch=touch)
