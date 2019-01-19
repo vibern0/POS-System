@@ -2,36 +2,36 @@
 
 <BarOptions>:
 	bt_newlist: newlist
-	bt_clearlist: clearbuylist
-	bt_finishlist: finishbuylist
-	bt_next: nextpage
-	bt_previous: previouspage
+	bt_clearlist: clear_buy_list
+	bt_finishlist: finish_buy_list
+	bt_next: next_page
+	bt_previous: previous_page
 	Button:
 		text: 'Close Session'
-		on_press: root.userLogout()
+		on_press: root.user_logout()
 	ButtonEx:
 		id: newlist
 		text: 'New List'
-		on_press: root.startNewBuyList()
+		on_press: root.start_new_buy_list()
 	ButtonEx:
-		id: clearbuylist
+		id: clear_buy_list
 		text: 'Clear List'
-		on_press: root.clearBuyList()
+		on_press: root.clear_buy_list()
 	ButtonEx:
-		id: finishbuylist
+		id: finish_buy_list
 		text: 'Finish List'
-		on_press: root.finishBuyList()
+		on_press: root.finish_buy_list()
 	ButtonEx:
-		id: nextpage
+		id: next_page
 		text: 'Next'
-		on_press: root.nextPage()
+		on_press: root.next_page()
 	ButtonEx:
-		id: previouspage
+		id: previous_page
 		text: 'Previous'
-		on_press: root.previousPage()
+		on_press: root.previous_page()
 	Button:
 		text: 'Menu'
-		on_press: root.loadMainWindow()
+		on_press: root.load_main_window()
 
 
 <LoginScreen>:
@@ -70,10 +70,10 @@
 	BoxLayout:
 		Button:
 			text: 'No'
-			on_press: root.answerNo()
+			on_press: root.answer_no()
 		Button:
 			text: 'Yes'
-			on_press: root.answerYes()
+			on_press: root.answer_yes()
 
 <Controller>:
 	a_articles: gd_articles
