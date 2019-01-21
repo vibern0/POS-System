@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-class Migration():
+
+class Migration:
     
     def __init__(self):
         pass
-    

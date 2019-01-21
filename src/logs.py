@@ -3,13 +3,17 @@
 import kivy
 kivy.require('1.0.5')
 
+
 class Logs:
 
-    def login(username):
+    def __init__(self):
         pass
 
-    def logout(username):
+    def login(self):
         pass
 
-    def finishList(username):
+    def logout(self):
+        pass
+
+    def finish_list(self):
         pass
